@@ -2,6 +2,7 @@ package com.nbd.model;
 
 import com.nbd.conventer.ClientTypeConverter;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,12 +11,19 @@ import lombok.Setter;
 @Setter
 @Entity
 @NoArgsConstructor
+@Table(name = "Client")
+@Access(AccessType.FIELD)
+@Embeddable
 public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @NotEmpty
+    @Column
     private String firstName;
+    @NotEmpty
     private String lastName;
+    @NotEmpty
     private String personalID;
     @Convert(converter = ClientTypeConverter.class)
     private ClientType clientType;
