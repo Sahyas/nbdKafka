@@ -1,4 +1,6 @@
-package com.nbd.service.api.client;
+package com.nbd.service.api;
+
+import com.nbd.model.Client;
 
 import java.util.Optional;
 import java.util.UUID;

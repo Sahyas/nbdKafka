@@ -1,4 +1,4 @@
-package com.nbd.service.api.client;
+package com.nbd.model;
 
 public abstract class ClientType {
     public abstract int getMaxBooks();
@@ -9,5 +9,10 @@ public abstract class ClientType {
 
     public float getPenalty() {
         return 0;
+    }
+
+    @Override
+    public String toString() {
+        return ClientType.class.getSimpleName();
     }
 }

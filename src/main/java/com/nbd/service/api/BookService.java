@@ -1,4 +1,6 @@
-package com.nbd.service.api.book;
+package com.nbd.service.api;
+
+import com.nbd.model.Book;
 
 import java.util.List;
 

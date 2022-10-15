@@ -1,7 +1,7 @@
-package com.nbd.service.impl.client;
+package com.nbd.service.impl;
 
-import com.nbd.service.api.client.Client;
-import com.nbd.service.api.client.ClientService;
+import com.nbd.model.Client;
+import com.nbd.service.api.ClientService;
 
 import java.util.Optional;
 import java.util.UUID;

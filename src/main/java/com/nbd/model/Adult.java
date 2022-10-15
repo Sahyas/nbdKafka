@@ -1,4 +1,4 @@
-package com.nbd.service.api.client;
+package com.nbd.model;
 
 public class Adult extends ClientType {
     @Override

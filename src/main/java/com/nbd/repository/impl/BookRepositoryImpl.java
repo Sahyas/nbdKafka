@@ -1,49 +1,49 @@
-package com.nbd.repository.impl.book;
+package com.nbd.repository.impl;
 
-import com.nbd.repository.api.book.BookModel;
-import com.nbd.repository.api.book.BookRepository;
+import com.nbd.model.Book;
+import com.nbd.repository.api.BookRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class BookRepositoryImpl implements BookRepository {
-    private final List<BookModel> books;
+    private final List<Book> books;
 
     public BookRepositoryImpl() {
         this.books = new ArrayList<>();
     }
 
     @Override
-    public List<BookModel> fetchBooks() {
+    public List<Book> fetchBooks() {
         return books;
     }
 
     @Override
-    public Optional<BookModel> findBySerialNumber(int id) {
+    public Optional<Book> findBySerialNumber(int id) {
         return books.stream()
-                .filter(book -> book.getSerialNumber() == id)
+                .filter(book -> book.getId() == id)
                 .findFirst();
     }
 
     @Override
-    public boolean addBook(BookModel book) {
+    public boolean addBook(Book book) {
         return books.add(book);
     }
 
     @Override
-    public boolean addBooks(List<BookModel> books) {
+    public boolean addBooks(List<Book> books) {
         return books.addAll(books);
     }
 
     @Override
-    public boolean dropBook(BookModel book) {
+    public boolean dropBook(Book book) {
         return books.remove(book);
     }
 
     @Override
-    public boolean updateBook(BookModel book) {
-        Optional<BookModel> foundBook = findBySerialNumber(book.getSerialNumber());
+    public boolean updateBook(Book book) {
+        Optional<Book> foundBook = findBySerialNumber(book.getId());
         if (!foundBook.isPresent()) {
             return false;
         }

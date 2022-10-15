@@ -1,8 +1,9 @@
-package com.nbd.service.api.rent;
+package com.nbd.service.api;
 
-import com.nbd.service.api.book.Book;
-import com.nbd.service.api.client.Client;
-import com.nbd.service.api.client.ClientType;
+import com.nbd.model.Book;
+import com.nbd.model.Client;
+import com.nbd.model.ClientType;
+import com.nbd.model.Rent;
 
 import java.util.List;
 

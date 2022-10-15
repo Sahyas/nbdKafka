@@ -1,17 +1,13 @@
-package com.nbd.service.impl.book.service;
+package com.nbd.service.impl;
 
-import com.nbd.repository.api.book.BookRepository;
-import com.nbd.service.api.book.Book;
-import com.nbd.service.api.book.BookService;
-import com.nbd.service.impl.book.mapper.BookMapper;
+import com.nbd.repository.api.BookRepository;
+import com.nbd.model.Book;
+import com.nbd.service.api.BookService;
 
-import java.rmi.NoSuchObjectException;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
-    private final BookMapper bookMapper = BookMapper.INSTANCE;
 
     public BookServiceImpl(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
@@ -19,9 +15,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book getBookById(int serialNumber) {
-        return bookMapper.bookModelToBook(
-                bookRepository.findBySerialNumber(serialNumber).get()
-        );
+        return bookRepository.findBySerialNumber(serialNumber).get();
     }
 
     @Override
