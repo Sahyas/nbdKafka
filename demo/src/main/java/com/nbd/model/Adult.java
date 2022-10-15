@@ -1,3 +1,5 @@
+package com.nbd.model;
+
 public class Adult extends ClientType {
     @Override
     public int getMaxDays() {

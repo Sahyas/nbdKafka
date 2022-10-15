@@ -1,4 +1,4 @@
-import org.apache.commons.lang3.builder.ToStringBuilder;
+package com.nbd.model;
 
 import java.util.Date;
 import java.util.UUID;
@@ -8,8 +8,8 @@ public class Rent {
     private UUID id;
     private Date beginTime;
     private Date endTime;
-    Book book = new Book();
-    Client client = new Client();
+    private final Book book;
+    private final Client client;
 
     public Rent(UUID id, Book book, Client client) {
         this.id = id;

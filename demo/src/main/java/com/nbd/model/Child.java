@@ -1,4 +1,6 @@
-public class Child extends ClientType{
+package com.nbd.model;
+
+public class Child extends ClientType {
     @Override
     public int getMaxDays() {
         return 2160;
