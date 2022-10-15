@@ -1,4 +1,6 @@
-package com.nbd.model;
+package com.nbd.service.api.client;
+
+import com.nbd.service.api.client.ClientType;
 
 public class Client {
     private final String firstName;
@@ -33,6 +35,18 @@ public class Client {
         return personalID;
     }
 
+    public int getAge() {
+        return age;
+    }
+
+    public boolean isArchive() {
+        return isArchive;
+    }
+
+    public float getDebt() {
+        return debt;
+    }
+
     public void setDebt(float debt) {
         this.debt = debt;
     }
@@ -43,18 +57,6 @@ public class Client {
 
     public void setArchive(boolean archive) {
         isArchive = archive;
-    }
-
-    @Override
-    public String toString() {
-        return new org.apache.commons.lang3.builder.ToStringBuilder(this)
-                .append("firstName", firstName)
-                .append("lastName", lastName)
-                .append("personalID", personalID)
-                .append("age", age)
-                .append("isArchive", isArchive)
-                .append("debt", debt)
-                .toString();
     }
 }
 

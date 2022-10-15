@@ -1,4 +1,4 @@
-package com.nbd.model;
+package com.nbd.service.api.book;
 
 public class Book {
     private String title;

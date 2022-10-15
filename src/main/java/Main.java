@@ -1,5 +1,5 @@
-import com.nbd.model.Child;
-import com.nbd.model.Client;
+import com.nbd.service.api.client.Child;
+import com.nbd.service.api.client.Client;
 
 public class Main {
     public static void main(String[] args) {

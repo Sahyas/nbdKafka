@@ -1,4 +1,4 @@
-package com.nbd.model;
+package com.nbd.service.api.client;
 
 public abstract class ClientType {
     public abstract int getMaxBooks();

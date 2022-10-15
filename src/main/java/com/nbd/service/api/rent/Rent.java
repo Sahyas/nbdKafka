@@ -1,23 +1,28 @@
-package com.nbd.model;
+package com.nbd.service.api.rent;
 
+import com.nbd.service.api.client.Client;
+import com.nbd.service.api.book.Book;
+
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 
 public class Rent {
 
-    private UUID id;
-    private Date beginTime;
+    private final int id;
+    private final Date beginTime;
     private Date endTime;
     private final Book book;
     private final Client client;
 
-    public Rent(UUID id, Book book, Client client) {
+    public Rent(int id, Book book, Client client) {
         this.id = id;
         this.book = book;
         this.client = client;
+        beginTime = new Date();
     }
 
-    public UUID getId() {
+    public int getId() {
         return id;
     }
 

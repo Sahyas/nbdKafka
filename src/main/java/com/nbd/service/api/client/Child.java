@@ -1,4 +1,6 @@
-package com.nbd.model;
+package com.nbd.service.api.client;
+
+import com.nbd.service.api.client.ClientType;
 
 public class Child extends ClientType {
     @Override
