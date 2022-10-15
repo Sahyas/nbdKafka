@@ -1,10 +1,10 @@
 public class Client {
-    String firstName;
-    String lastName;
-    String personalID;
-    int age;
+    private String firstName;
+    private String lastName;
+    private String personalID;
+    private int age;
     boolean isArchive = false;
-    float debt = 0;
+    private float debt = 0;
     ClientType clientType = new ClientType() {
         @Override
         public int getMaxBooks() {
@@ -26,6 +26,10 @@ public class Client {
             return super.getPenalty();
         }
     };
+
+    public Client() {
+    }
+
     public Client(String firstName, String lastName, String personalID, int age, ClientType clientType) {
         this.firstName = firstName;
         this.lastName = lastName;

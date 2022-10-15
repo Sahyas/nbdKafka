@@ -1,9 +1,12 @@
 public class Book {
-    String title;
-    String author;
-    String serialNumber;
-    String genre;
+    private String title;
+    private String author;
+    private String serialNumber;
+    private String genre;
     boolean IsArchive = false;
+
+    public Book() {
+    }
 
     public Book(String title, String author, String serialNumber, String genre) {
         this.title = title;
