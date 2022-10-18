@@ -12,8 +12,7 @@ import lombok.ToString;
 @Table(name = "book")
 @Access(AccessType.FIELD)
 @ToString
-
-public class Book extends AbstractEntity{
+public class Book extends AbstractEntity {
     @Id
     @Column(name = "book_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,16 +28,19 @@ public class Book extends AbstractEntity{
     private String serialNumber;
     @Column(name = "genre")
     private String genre;
+    @Column
     boolean IsArchive = false;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @JoinColumn
+    private Rent rent;
 
     public Book() {
     }
 
-    public Book(String title, String author, String serialNumber, String genre, int id) {
+    public Book(String title, String author, String serialNumber, String genre) {
         this.title = title;
         this.author = author;
         this.serialNumber = serialNumber;
         this.genre = genre;
-        this.id = id;
     }
 }
