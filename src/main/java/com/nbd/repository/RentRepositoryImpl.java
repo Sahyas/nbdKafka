@@ -2,8 +2,6 @@ package com.nbd.repository;
 
 import com.nbd.model.Rent;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.PersistenceContext;
 
 import java.util.List;
 

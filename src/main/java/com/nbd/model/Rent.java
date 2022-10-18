@@ -29,10 +29,19 @@ public class Rent extends AbstractEntity {
     private Date beginTime;
     @Column
     private Date endTime;
-    @OneToMany(mappedBy = "rent")
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "rent_books",
+            joinColumns = {@JoinColumn(name = "rent_id", referencedColumnName = "rent_id")},
+            inverseJoinColumns = {@JoinColumn(name = "book_id", referencedColumnName = "book_id")})
     @NotNull
-    private List<Book> book = new ArrayList<>();
+    private List<Book> books;
     @ManyToOne
     @JoinColumn
     private Client client;
+
+    public Rent(List<Book> books, Client client) {
+        this.beginTime = new Date();
+        this.books = books;
+        this.client = client;
+    }
 }

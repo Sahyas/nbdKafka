@@ -13,6 +13,6 @@ public abstract class ClientType extends AbstractEntity{
 
     @Override
     public String toString() {
-        return ClientType.class.getSimpleName();
+        return "";
     }
 }

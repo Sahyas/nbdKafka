@@ -20,4 +20,9 @@ public class Adult extends ClientType {
     public String getTypeInfo() {
         return "ADULT";
     }
+
+    @Override
+    public String toString() {
+        return "Adult";
+    }
 }

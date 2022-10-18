@@ -20,4 +20,9 @@ public class Child extends ClientType {
     public float getPenalty() {
         return super.getPenalty() * 1.2f;
     }
+
+    @Override
+    public String toString() {
+        return "Child";
+    }
 }

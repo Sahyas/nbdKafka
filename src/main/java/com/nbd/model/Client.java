@@ -38,8 +38,6 @@ public class Client extends AbstractEntity {
     boolean isArchive = false;
     @Column
     private float debt = 0;
-    @OneToMany(mappedBy = "client")
-    List<Rent> rents = new ArrayList<>();
 
     public Client(final String firstName, final String lastName, final String personalID, final int age, final ClientType clientType) {
         this.firstName = firstName;

@@ -30,9 +30,6 @@ public class Book extends AbstractEntity {
     private String genre;
     @Column
     boolean IsArchive = false;
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-    @JoinColumn
-    private Rent rent;
 
     public Book() {
     }

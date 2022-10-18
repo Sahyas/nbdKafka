@@ -17,4 +17,9 @@ public class BookRepositoryImpl extends JpaRepositoryImpl<Book> {
     public List<Book> findAll() {
         return em.createQuery("Select book from Book book", Book.class).getResultList();
     }
+
+    @Override
+    public Book getById(int id) {
+        return em.find(Book.class, id);
+    }
 }

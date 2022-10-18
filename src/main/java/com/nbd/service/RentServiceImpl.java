@@ -7,7 +7,9 @@ import com.nbd.repository.BookRepositoryImpl;
 import com.nbd.repository.ClientRepositoryImpl;
 import com.nbd.repository.RentRepositoryImpl;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class RentServiceImpl {
     private final RentRepositoryImpl rentRepository;
@@ -20,12 +22,16 @@ public class RentServiceImpl {
         this.bookRepository = bookRepository;
     }
 
-    public void rentBook(Client client, Book book) {
-        Book foundBook = bookRepository.getById(book.getId());
-        if (foundBook != null) {
-            throw new RuntimeException("Cannot rent this book");
+    public boolean rentBook(Client client, List<Book> books) {
+        List<Rent> currentRents = findAllCurrentRents();
+        List<Book> allBooks = new ArrayList<>();
+        currentRents.forEach(rent -> allBooks.addAll(rent.getBooks()));
+        if(allBooks.hashCode() == books.hashCode()) {
+            return false;
         }
 
+        rentRepository.add(new Rent(books, client));
+        return true;
     }
 
     public boolean returnBook(Book book) {
