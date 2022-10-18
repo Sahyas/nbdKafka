@@ -13,7 +13,7 @@ import lombok.ToString;
 @Access(AccessType.FIELD)
 @ToString
 
-public class Book {
+public class Book extends AbstractEntity{
     @Id
     @Column(name = "book_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

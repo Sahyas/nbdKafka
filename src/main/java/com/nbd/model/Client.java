@@ -14,7 +14,7 @@ import lombok.Setter;
 @Table(name = "Client")
 @Access(AccessType.FIELD)
 @Embeddable
-public class Client {
+public class Client extends AbstractEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;

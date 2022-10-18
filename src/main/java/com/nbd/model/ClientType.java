@@ -1,6 +1,6 @@
 package com.nbd.model;
 
-public abstract class ClientType {
+public abstract class ClientType extends AbstractEntity{
     public abstract int getMaxBooks();
 
     public abstract String getTypeInfo();
