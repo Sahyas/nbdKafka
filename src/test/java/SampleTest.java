@@ -49,7 +49,7 @@ public class SampleTest {
         book.setRented(true);
         bookRepository.updateBook(book);
         book = bookService.getBook("123");
-        //assertThat(book.isRented()).isTrue();
+        assertThat(book.isRented()).isTrue();
 
         bookService.registerBook("someTitle2", "someAuthor2", "123123", "someGenre2");
         Book book2 = bookService.getBook("123123");
@@ -89,9 +89,9 @@ public class SampleTest {
         Book book = bookService.getBook("123");
         clientService.addClient("Szymon", "Zakrzewski", "0123", 21);
         Client client = clientService.getClientByPersonalId("0123");
-        List<Rent> rents = new ArrayList<>();
         rentService.rentBook("0123", "123");
         Rent rent = rentService.getRentByBook("123");
+        book = bookRepository.findBySerialNumber("123");
         assertThat(rent.getBook()).isEqualTo(book);
         rent = rentService.getRentByClient("0123");
         assertThat(rent.getClient()).isEqualTo(client);
@@ -107,6 +107,36 @@ public class SampleTest {
         Rent rent = rentService.getRentByBook("123");
         rentService.rentBook("0123", "123");
         rents.addAll(rentService.findAllCurrentRents());
-        //assertThat(rents.size()).isEqualTo(1);
+        assertThat(rents.size()).isEqualTo(1);
+
+        bookService.registerBook("someTitle2", "someAuthor2", "1230", "someGenre2");
+        Book book2 = bookService.getBook("1230");
+        bookService.registerBook("someTitle3", "someAuthor3", "1231", "someGenre3");
+        Book book3 = bookService.getBook("1231");
+        rentService.rentBook("0123", "1230");
+        rentService.rentBook("0123", "1231");
+        rents.removeAll(rents);
+        rents.addAll(rentService.findAllCurrentRents());
+        assertThat(rents.size()).isEqualTo(3);
+        Rent rent2 = rentService.getRentByClient("0123");
+        System.out.println(rent2);
+    }
+
+    @Test
+    void returnBookTest() {
+        List<Rent> rents = new ArrayList<>();
+        clientService.addClient("Szymon", "Zakrzewski", "0123", 21);
+        bookService.registerBook("someTitle", "someAuthor", "123", "someGenre");
+        Book book = bookService.getBook("123");
+        rentService.rentBook("0123", "123");
+        Rent rent = rentService.getRentByBook("123");
+        rents.addAll(rentService.findAllCurrentRents());
+        assertThat(rents.size()).isEqualTo(1);
+
+        book = bookRepository.findBySerialNumber("123");
+        rentService.returnBook(book);
+        rents.removeAll(rents);
+        rents.addAll(rentService.findAllCurrentRents());
+        assertThat(rents.size()).isEqualTo(0);
     }
 }

@@ -1,6 +1,7 @@
 package com.nbd.repository;
 
 import com.mongodb.BasicDBObject;
+import com.mongodb.MongoException;
 import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
@@ -41,30 +42,24 @@ public class BookRepositoryImpl extends AbstractMongoRepository {
 
     @Override
     public void close() throws Exception {
-        System.out.println("BookRepository close");
+        System.out.println("closing book repository");
     }
 
     public void updateBook(Book book) {
-        ClientSession clientSession = mongoClient.startSession();
+        MongoCollection<Book> collection = mongoDb.getCollection(collectionString, Book.class);
+        Bson filter = Filters.eq("_id", book.getId());
+        Bson update = Updates.combine(
+                Updates.set("title", book.getTitle()),
+                Updates.set("author", book.getAuthor()),
+                Updates.set("serialNumber", book.getSerialNumber()),
+                Updates.set("genre", book.getGenre()),
+                Updates.set("rented", book.isRented())
+        );
         try {
-            clientSession.startTransaction();
-            MongoCollection<Book> collection = mongoDb.getCollection(collectionString, Book.class);
-            Bson filter = Filters.eq("id", book.getId());
-            Bson update = Updates.combine(
-                    Updates.set("title", book.getTitle()),
-                    Updates.set("author", book.getAuthor()),
-                    Updates.set("serialNumber", book.getSerialNumber()),
-                    Updates.set("genre", book.getGenre()),
-                    Updates.set("rented", book.isRented())
-            );
-            UpdateResult result = collection.updateOne(clientSession, filter, update);
-            System.out.println(result.getMatchedCount());
-            clientSession.commitTransaction();
-        } catch (Exception e) {
-            clientSession.abortTransaction();
-        } finally {
-            clientSession.close();
+            UpdateResult result = collection.updateOne(filter, update);
+            System.out.println("Licznik modyfikacji dokumentu:" + result.getModifiedCount());
+        } catch (MongoException e) {
+            System.err.println("Cannot update because of: " + e.getMessage());
         }
-        System.out.println(getById(book.getId()));
     }
 }

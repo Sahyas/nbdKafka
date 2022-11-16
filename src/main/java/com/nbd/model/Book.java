@@ -25,7 +25,7 @@ public class Book extends AbstractEntityMgd {
     @BsonProperty("rented")
     private boolean isRented;
     @BsonCreator
-    public Book(@BsonProperty("id") UUID entityId,
+    public Book(@BsonProperty("_id") UUID entityId,
                 @BsonProperty("title") String title,
                 @BsonProperty("author") String author,
                 @BsonProperty("serialNumber") String serialNumber,

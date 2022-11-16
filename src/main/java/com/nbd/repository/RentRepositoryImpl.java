@@ -37,6 +37,6 @@ public class RentRepositoryImpl extends AbstractMongoRepository {
 
     @Override
     public void close() throws Exception {
-
+        System.out.println("closing rent repository");
     }
 }

@@ -28,7 +28,7 @@ public abstract class Client extends AbstractEntityMgd {
     private int age;
 
     @BsonCreator
-    public Client(@BsonProperty("id") UUID entityId,
+    public Client(@BsonProperty("_id") UUID entityId,
                   @BsonProperty("firstName") String firstName,
                   @BsonProperty("lastName") String lastName,
                   @BsonProperty("personalId") String personalId,

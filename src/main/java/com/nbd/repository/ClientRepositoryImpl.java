@@ -27,6 +27,6 @@ public class ClientRepositoryImpl extends AbstractMongoRepository<Client> {
 
     @Override
     public void close() throws Exception {
-
+        System.out.println("closing client repository");
     }
 }

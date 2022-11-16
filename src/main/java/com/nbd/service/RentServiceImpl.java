@@ -26,17 +26,24 @@ public class RentServiceImpl {
         Book book = bookRepository.findBySerialNumber(bookSerialNumber);
         Rent rent = new Rent(client, book);
         if (!book.isRented()) {
-            rentRepository.add(rent);
-        }
-        rent = rentRepository.findByBook(book);
-        if (rent != null) {
             book.setRented(true);
             bookRepository.updateBook(book);
+            rentRepository.add(rent);
         }
     }
 
     public boolean returnBook(Book book) {
-        return false;
+        if(book.isRented()) {
+            Book foundBook = bookRepository.findBySerialNumber(book.getSerialNumber());
+            Rent rent = rentRepository.findByBook(book);
+            rentRepository.delete(rent.getId());
+            foundBook.setRented(false);
+            bookRepository.updateBook(book);
+            return true;
+        } else {
+            System.out.println("Ta książka nie jest wypozyczona");
+            return false;
+        }
     }
 
     public List<Rent> findAllCurrentRents() {

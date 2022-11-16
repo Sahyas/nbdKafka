@@ -22,7 +22,7 @@ public class Rent extends AbstractEntityMgd {
     @BsonProperty(value = "client", useDiscriminator = true)
     private Client client;
     @BsonCreator
-    public Rent(@BsonProperty("id") UUID entityId,
+    public Rent(@BsonProperty("_id") UUID entityId,
                 @BsonProperty("beginTime") Date beginTime,
                 @BsonProperty("endTime") Date endTime,
                 @BsonProperty("book") Book book,
