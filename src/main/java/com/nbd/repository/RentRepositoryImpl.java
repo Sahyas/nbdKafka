@@ -1,18 +1,42 @@
 package com.nbd.repository;
 
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Filters;
+import com.nbd.model.Book;
+import com.nbd.model.Client;
 import com.nbd.model.Rent;
-import jakarta.persistence.EntityManager;
+import org.bson.conversions.Bson;
 
-import java.util.List;
+public class RentRepositoryImpl extends AbstractMongoRepository {
+    public RentRepositoryImpl() {
+        super("rents", Rent.class);
+    }
 
-public class RentRepositoryImpl extends JpaRepositoryImpl<Rent> {
+    public void clearDatabase() {
+        MongoCollection<Rent> collection = mongoDb.getCollection(collectionString, Rent.class);
+        collection.drop();
+    }
 
-    public RentRepositoryImpl(EntityManager em) {
-        super(em);
+    public Rent findByBook(Book book) {
+        MongoCollection<Rent> collection = mongoDb.getCollection(collectionString, Rent.class);
+        Bson filter = Filters.eq("book._id", book.getId());
+        return collection
+                .find()
+                .filter(filter)
+                .first();
+    }
+
+    public Rent findByClient(Client client) {
+        MongoCollection<Rent> collection = mongoDb.getCollection(collectionString, Rent.class);
+        Bson filter = Filters.eq("client._id", client.getId());
+        return collection
+                .find()
+                .filter(filter)
+                .first();
     }
 
     @Override
-    public List<Rent> findAll() {
-        return em.createQuery("Select rent from Rent rent", Rent.class).getResultList();
+    public void close() throws Exception {
+
     }
 }

@@ -1,23 +1,32 @@
 package com.nbd.repository;
 
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Filters;
 import com.nbd.model.Client;
-import jakarta.persistence.EntityManager;
+import org.bson.conversions.Bson;
 
-import java.util.List;
+public class ClientRepositoryImpl extends AbstractMongoRepository<Client> {
 
-public class ClientRepositoryImpl extends JpaRepositoryImpl<Client> {
+    public ClientRepositoryImpl() {
+        super("clients", Client.class);
+    }
 
-    public ClientRepositoryImpl(EntityManager em) {
-        super(em);
+    public Client findByPersonalID(String personalId) {
+        MongoCollection<Client> collection = mongoDb.getCollection(collectionString, Client.class);
+        Bson filter = Filters.eq("personalId", personalId);
+        return collection
+                .find()
+                .filter(filter)
+                .first();
+    }
+
+    public void clearDatabase() {
+        MongoCollection<Client> collection = mongoDb.getCollection(collectionString, Client.class);
+        collection.drop();
     }
 
     @Override
-    public List<Client> findAll() {
-        return em.createQuery("Select client from Client client", Client.class).getResultList();
-    }
+    public void close() throws Exception {
 
-    @Override
-    public Client getById(int id) {
-        return em.find(Client.class, id);
     }
 }

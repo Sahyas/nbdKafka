@@ -9,29 +9,30 @@ import com.nbd.repository.RentRepositoryImpl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class RentServiceImpl {
     private final RentRepositoryImpl rentRepository;
     private final ClientRepositoryImpl clientRepository;
     private final BookRepositoryImpl bookRepository;
 
-    public RentServiceImpl(RentRepositoryImpl rentRepository, ClientRepositoryImpl clientRepository, BookRepositoryImpl bookRepository) {
-        this.rentRepository = rentRepository;
-        this.clientRepository = clientRepository;
-        this.bookRepository = bookRepository;
+    public RentServiceImpl() {
+        this.rentRepository = new RentRepositoryImpl();
+        this.clientRepository = new ClientRepositoryImpl();
+        this.bookRepository = new BookRepositoryImpl();
     }
 
-    public boolean rentBook(Client client, List<Book> books) {
-        List<Rent> currentRents = findAllCurrentRents();
-        List<Book> allBooks = new ArrayList<>();
-        currentRents.forEach(rent -> allBooks.addAll(rent.getBooks()));
-        if(allBooks.hashCode() == books.hashCode()) {
-            return false;
+    public void rentBook(String clientPersonalId, String bookSerialNumber) {
+        Client client = clientRepository.findByPersonalID(clientPersonalId);
+        Book book = bookRepository.findBySerialNumber(bookSerialNumber);
+        Rent rent = new Rent(client, book);
+        if (!book.isRented()) {
+            rentRepository.add(rent);
         }
-
-        rentRepository.add(new Rent(books, client));
-        return true;
+        rent = rentRepository.findByBook(book);
+        if (rent != null) {
+            book.setRented(true);
+            bookRepository.updateBook(book);
+        }
     }
 
     public boolean returnBook(Book book) {
@@ -40,5 +41,13 @@ public class RentServiceImpl {
 
     public List<Rent> findAllCurrentRents() {
         return rentRepository.findAll();
+    }
+
+    public Rent getRentByBook(String serialnumber) {
+        return rentRepository.findByBook(bookRepository.findBySerialNumber(serialnumber));
+    }
+
+    public Rent getRentByClient(String personalID) {
+        return rentRepository.findByClient(clientRepository.findByPersonalID(personalID));
     }
 }

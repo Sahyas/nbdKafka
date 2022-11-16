@@ -1,47 +1,44 @@
 package com.nbd.model;
 
-import com.nbd.model.Client;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
-import java.util.ArrayList;
+import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 import java.util.Date;
-import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
-@Table(name = "Rent")
-@Access(AccessType.FIELD)
-@Entity
 @ToString
-@NoArgsConstructor
-public class Rent extends AbstractEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "rent_id")
-    private int id;
-    @Column
-    @NotNull
+public class Rent extends AbstractEntityMgd {
+    @BsonProperty("beginTime")
     private Date beginTime;
-    @Column
+    @BsonProperty("endTime")
     private Date endTime;
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "rent_books",
-            joinColumns = {@JoinColumn(name = "rent_id", referencedColumnName = "rent_id")},
-            inverseJoinColumns = {@JoinColumn(name = "book_id", referencedColumnName = "book_id")})
-    @NotNull
-    private List<Book> books;
-    @ManyToOne
-    @JoinColumn
+    @BsonProperty("book")
+    private Book book;
+    @BsonProperty(value = "client", useDiscriminator = true)
     private Client client;
-
-    public Rent(List<Book> books, Client client) {
-        this.beginTime = new Date();
-        this.books = books;
+    @BsonCreator
+    public Rent(@BsonProperty("id") UUID entityId,
+                @BsonProperty("beginTime") Date beginTime,
+                @BsonProperty("endTime") Date endTime,
+                @BsonProperty("book") Book book,
+                @BsonProperty("client") Client client) {
+        super(entityId);
+        this.beginTime = beginTime;
+        this.endTime = endTime;
+        this.book = book;
         this.client = client;
+    }
+
+    public Rent(Client client, Book book) {
+        super(UUID.randomUUID());
+        this.client = client;
+        this.book = book;
+        this.beginTime = new Date();
+        this.endTime = new Date();
     }
 }

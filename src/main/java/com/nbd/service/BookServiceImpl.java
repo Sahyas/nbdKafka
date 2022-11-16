@@ -4,27 +4,32 @@ import com.nbd.repository.BookRepositoryImpl;
 import com.nbd.model.Book;
 
 import java.util.List;
+import java.util.UUID;
 
 public class BookServiceImpl {
     private final BookRepositoryImpl bookRepository;
 
-    public BookServiceImpl(BookRepositoryImpl bookRepository) {
-        this.bookRepository = bookRepository;
+    public BookServiceImpl() {
+        this.bookRepository = new BookRepositoryImpl();
     }
 
-    public Book getBookById(int id) {
+    public Object getBookById(UUID id) {
         return bookRepository.getById(id);
+    }
+
+    public Book getBook(String serialNumber) {
+        return bookRepository.findBySerialNumber(serialNumber);
     }
 
     public List<Book> findAllBooks() {
         return bookRepository.findAll();
     }
 
-    public Book registerBook(String title, String author, String serialNumber, String genre) {
-        return bookRepository.add(new Book(title, author, serialNumber, genre));
+    public void registerBook(String title, String author, String serialNumber, String genre) {
+        bookRepository.add(new Book(title, author, serialNumber, genre));
     }
 
     public void unregisterBook(Book book) {
-        bookRepository.delete(book);
+        bookRepository.delete(book.getId());
     }
 }

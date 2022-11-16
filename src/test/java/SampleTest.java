@@ -1,4 +1,3 @@
-import com.nbd.model.Adult;
 import com.nbd.model.Book;
 import com.nbd.model.Client;
 import com.nbd.model.Rent;
@@ -8,20 +7,14 @@ import com.nbd.repository.RentRepositoryImpl;
 import com.nbd.service.BookServiceImpl;
 import com.nbd.service.ClientServiceImpl;
 import com.nbd.service.RentServiceImpl;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SampleTest {
-    private static EntityManagerFactory emf;
-    private static EntityManager em;
     private RentRepositoryImpl rentRepository;
     private BookRepositoryImpl bookRepository;
     private ClientRepositoryImpl clientRepository;
@@ -32,54 +25,88 @@ public class SampleTest {
 
     @BeforeEach
     void beforeEach() {
-        if (emf != null) {
-            emf.close();
-        }
-        emf = Persistence.createEntityManagerFactory("POSTGRES");
-        em = emf.createEntityManager();
-        this.bookRepository = new BookRepositoryImpl(em);
-        this.clientRepository = new ClientRepositoryImpl(em);
-        this.rentRepository = new RentRepositoryImpl(em);
-        this.rentService = new RentServiceImpl(rentRepository, clientRepository, bookRepository);
-        this.clientService = new ClientServiceImpl(clientRepository);
-        this.bookService = new BookServiceImpl(bookRepository);
+        this.bookRepository = new BookRepositoryImpl();
+        this.rentRepository = new RentRepositoryImpl();
+        this.clientRepository = new ClientRepositoryImpl();
 
+        this.clientService = new ClientServiceImpl();
+        this.bookService = new BookServiceImpl();
+        this.rentService = new RentServiceImpl();
+
+        clientRepository.clearDatabase();
+        rentRepository.clearDatabase();
+        bookRepository.clearDatabase();
     }
 
     @Test
-    public void bookRepositoryTest() {
-        Book book = new Book("abc", "def", "123", "fantasy");
-        Book retrievedBook = bookService.registerBook("abc", "def", "123", "fantasy");
-        assertThat(book.getTitle()).isEqualTo(retrievedBook.getTitle());
-        bookService.unregisterBook(retrievedBook);
-        retrievedBook = bookService.getBookById(retrievedBook.getId());
-        assertThat(retrievedBook).isNull();
+    void simpleBookRepositoryTest() {
+        bookService.registerBook("someTitle", "someAuthor", "123", "someGenre");
+        Book book = bookService.getBook("123");
+        assertThat(book.getTitle()).isEqualTo("someTitle");
+        assertThat(book.getAuthor()).isEqualTo("someAuthor");
+        assertThat(book.getGenre()).isEqualTo("someGenre");
+        assertThat(book.isRented()).isFalse();
+        book.setRented(true);
+        bookRepository.updateBook(book);
+        book = bookService.getBook("123");
+        //assertThat(book.isRented()).isTrue();
+
+        bookService.registerBook("someTitle2", "someAuthor2", "123123", "someGenre2");
+        Book book2 = bookService.getBook("123123");
+        assertThat(book2.getTitle()).isEqualTo("someTitle2");
+        assertThat(book2.getAuthor()).isEqualTo("someAuthor2");
+        assertThat(book2.getGenre()).isEqualTo("someGenre2");
+
+        List<Book> books = new ArrayList<>();
+        books.addAll(bookService.findAllBooks());
+        assertThat(books.size()).isEqualTo(2);
+        bookService.unregisterBook(book2);
+        books.removeAll(books);
+        books.addAll(bookService.findAllBooks());
+        assertThat(books.size()).isEqualTo(1);
     }
 
     @Test
-    public void clientRepositoryTest() {
-        Client client = new Client("Szymon", "Zakrzewski", "1234", 21, new Adult());
-        clientService.addClient(client);
-        Client foundClient = clientService.getClientById(client.getId());
-        assertThat(foundClient.getPersonalID()).isEqualTo(client.getPersonalID());
+    void simpleClientRepositoryTest() {
+        List<Client> clients = new ArrayList<>();
+        clientService.addClient("Szymon", "Zakrzewski", "123", 21);
+        Client client = clientService.getClientByPersonalId("123");
+        assertThat(client.getTypeInfo()).isEqualTo("ADULT");
+
+        clientService.addClient("someName", "someLastName", "123123", 8);
+
+        clients.addAll(clientService.findAllClients());
+        assertThat(clients.size()).isEqualTo(2);
         clientService.deleteClient(client);
-        assertThat(clientService.getClientById(foundClient.getId())).isNull();
+        clients.removeAll(clients);
+        clients.addAll(clientService.findAllClients());
+        assertThat(clients.size()).isEqualTo(1);
     }
 
     @Test
-    public void rentTest() {
-        Client client = new Client("Szymon", "Zakrzewski", "1234", 21, new Adult());
-        Book sampleBook = new Book("abc", "def", "123", "fantasy");
-        Book sampleBook2 = new Book("abc1", "def1", "1234", "fantasy1");
-        List<Book> bookList = Arrays.asList(sampleBook, sampleBook2);
-        Rent rent = new Rent();
-        rent.setBooks(bookList);
-        clientService.addClient(client);
-        bookService.registerBook("abc", "def", "123", "fantasy");
-        bookService.registerBook("abc1", "def1", "1234", "fantasy1");
-        rentService.rentBook(client, bookList);
-        Client client2 = new Client("Szymon2", "Zakrzewski2", "12342", 212, new Adult());
-        clientService.addClient(client2);
-        rentService.rentBook(client2, bookList);
+    void simpleRentRepositoryTest() {
+        bookService.registerBook("someTitle", "someAuthor", "123", "someGenre");
+        Book book = bookService.getBook("123");
+        clientService.addClient("Szymon", "Zakrzewski", "0123", 21);
+        Client client = clientService.getClientByPersonalId("0123");
+        List<Rent> rents = new ArrayList<>();
+        rentService.rentBook("0123", "123");
+        Rent rent = rentService.getRentByBook("123");
+        assertThat(rent.getBook()).isEqualTo(book);
+        rent = rentService.getRentByClient("0123");
+        assertThat(rent.getClient()).isEqualTo(client);
+    }
+
+    @Test
+    void rentRentedBookTest() {
+        List<Rent> rents = new ArrayList<>();
+        clientService.addClient("Szymon", "Zakrzewski", "0123", 21);
+        bookService.registerBook("someTitle", "someAuthor", "123", "someGenre");
+        Book book = bookService.getBook("123");
+        rentService.rentBook("0123", "123");
+        Rent rent = rentService.getRentByBook("123");
+        rentService.rentBook("0123", "123");
+        rents.addAll(rentService.findAllCurrentRents());
+        //assertThat(rents.size()).isEqualTo(1);
     }
 }

@@ -1,43 +1,50 @@
 package com.nbd.model;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonProperty;
+
+import java.util.UUID;
 
 @Getter
 @Setter
-@Entity
-@Table(name = "book")
-@Access(AccessType.FIELD)
 @ToString
-public class Book extends AbstractEntity {
-    @Id
-    @Column(name = "book_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    @Column(name = "title")
-    @NotNull
+@EqualsAndHashCode
+public class Book extends AbstractEntityMgd {
+    @BsonProperty("title")
     private String title;
-    @Column(name = "author")
-    @NotNull
+    @BsonProperty("author")
     private String author;
-    @Column(name = "serialNumber")
-    @NotNull
+    @BsonProperty("serialNumber")
     private String serialNumber;
-    @Column(name = "genre")
+    @BsonProperty("genre")
     private String genre;
-    @Column
-    boolean IsArchive = false;
-
-    public Book() {
-    }
-
-    public Book(String title, String author, String serialNumber, String genre) {
+    @BsonProperty("rented")
+    private boolean isRented;
+    @BsonCreator
+    public Book(@BsonProperty("id") UUID entityId,
+                @BsonProperty("title") String title,
+                @BsonProperty("author") String author,
+                @BsonProperty("serialNumber") String serialNumber,
+                @BsonProperty("genre") String genre,
+                @BsonProperty("rented") boolean isRented) {
+        super(entityId);
         this.title = title;
         this.author = author;
         this.serialNumber = serialNumber;
         this.genre = genre;
+        this.isRented = isRented;
+    }
+
+    public Book(String title, String author, String serialNumber, String genre) {
+        super(UUID.randomUUID());
+        this.title = title;
+        this.author = author;
+        this.serialNumber = serialNumber;
+        this.genre = genre;
+        this.isRented = false;
     }
 }
