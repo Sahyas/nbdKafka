@@ -16,7 +16,7 @@ public class ClientServiceImpl {
     }
 
     public Object getClientById(UUID id) {
-        return clientRepository.getById(id);
+        return null;
     }
 
     public Client getClientByPersonalId(String personalId) {
@@ -33,10 +33,10 @@ public class ClientServiceImpl {
     }
 
     public void deleteClient(Client client) {
-        clientRepository.delete(client.getId());
+
     }
 
     public List<Client> findAllClients() {
-        return clientRepository.findAll();
+        return null;
     }
 }

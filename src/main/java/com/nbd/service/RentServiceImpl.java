@@ -8,6 +8,7 @@ import com.nbd.repository.ClientRepositoryImpl;
 import com.nbd.repository.RentRepositoryImpl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class RentServiceImpl {
@@ -29,6 +30,8 @@ public class RentServiceImpl {
             book.setRented(true);
             bookRepository.updateBook(book);
             rentRepository.add(rent);
+        } else {
+            System.out.println("Ta książka jest już wypozyczona");
         }
     }
 
@@ -36,9 +39,11 @@ public class RentServiceImpl {
         if(book.isRented()) {
             Book foundBook = bookRepository.findBySerialNumber(book.getSerialNumber());
             Rent rent = rentRepository.findByBook(book);
-            rentRepository.delete(rent.getId());
             foundBook.setRented(false);
             bookRepository.updateBook(book);
+            rent.setEndTime(new Date());
+            System.out.println(new Date());
+            rentRepository.updateRent(rent);
             return true;
         } else {
             System.out.println("Ta książka nie jest wypozyczona");
@@ -47,7 +52,7 @@ public class RentServiceImpl {
     }
 
     public List<Rent> findAllCurrentRents() {
-        return rentRepository.findAll();
+        return null;
     }
 
     public Rent getRentByBook(String serialnumber) {

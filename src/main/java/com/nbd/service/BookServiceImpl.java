@@ -14,7 +14,7 @@ public class BookServiceImpl {
     }
 
     public Object getBookById(UUID id) {
-        return bookRepository.getById(id);
+        return null;
     }
 
     public Book getBook(String serialNumber) {
@@ -22,7 +22,7 @@ public class BookServiceImpl {
     }
 
     public List<Book> findAllBooks() {
-        return bookRepository.findAll();
+        return null;
     }
 
     public void registerBook(String title, String author, String serialNumber, String genre) {
@@ -30,6 +30,6 @@ public class BookServiceImpl {
     }
 
     public void unregisterBook(Book book) {
-        bookRepository.delete(book.getId());
+
     }
 }
