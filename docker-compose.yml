@@ -1,173 +1,46 @@
-version: '3.9'
+version: '3.8'
 services:
-  redis-cluster_1:
-    image: docker.io/bitnami/redis-cluster:7.0
-    ports:
-      - "7001:7001"
-      - "17001:17001"
-    environment:
-      - REDIS_PORT_NUMBER=7001
-      - REDIS_PASSWORD=master123
-      - REDIS_NODES=redis-cluster_1 redis-cluster_2 redis-cluster_3 redis-cluster_4 redis-cluster_5 redis-cluster_6
-      - REDIS_CLUSTER_ANNOUNCE_PORT=7001
-      - REDIS_CLUSTER_ANNOUNCE_IP=192.168.65.0
-      -  REDIS_CLUSTER_BUS_ANNOUNCE_PORT=17001
-      - REDIS_CLUSTER_DYNAMIC_IPS=no
+  redis-stack:
+    image: redis/redis-stack:latest
     volumes:
-      - type: bind
-        source: ./modules
-        target: /opt/bitnami/redis/modules
-      - type: bind
-        source: ./modules/overrides.conf
-        target: /opt/bitnami/redis/mounted-etc/overrides.conf
-    networks:
-      redisnetwork:
-        ipv4_address: 172.24.112.1
-
-  redis-cluster_2:
-    image: docker.io/bitnami/redis-cluster:7.0
+      - redis-stack-data:/bitnami/redis/data
     ports:
-      - "7002:7002"
-      - "17002:17002"
-    environment:
-      - REDIS_PORT_NUMBER=7002
-      - REDIS_PASSWORD=master123
-      - REDIS_NODES=redis-cluster_1 redis-cluster_2 redis-cluster_3 redis-cluster_4 redis-cluster_5 redis-cluster_6
-      - REDIS_CLUSTER_ANNOUNCE_PORT=7002
-      - REDIS_CLUSTER_ANNOUNCE_IP=192.168.65.0
-      - REDIS_CLUSTER_BUS_ANNOUNCE_PORT=17002
-      - REDIS_CLUSTER_DYNAMIC_IPS=no
-    volumes:
-      - type: bind
-        source: ./modules
-        target: /opt/bitnami/redis/modules
-      - type: bind
-        source: ./modules/overrides.conf
-        target: /opt/bitnami/redis/mounted-etc/overrides.conf
+      - "8001:8001"
+      - "6379:6379"
     networks:
-      redisnetwork:
-        ipv4_address: 172.24.112.2
-
-  redis-cluster_3:
-    image: docker.io/bitnami/redis-cluster:7.0
+      - redisnet
+  mongo:
+    build: .
+    image: mongocustom:1
+    container_name: mongodb
+    hostname: mongodb
     ports:
-      - "7003:7003"
-      - "17003:17003"
+      - "27017:27017"
     environment:
-      - REDIS_PORT_NUMBER=7001
-      - REDIS_PASSWORD=master123
-      - REDIS_NODES=redis-cluster_1 redis-cluster_2 redis-cluster_3 redis-cluster_4 redis-cluster_5 redis-cluster_6
-      - REDIS_CLUSTER_ANNOUNCE_PORT=7003
-      - REDIS_CLUSTER_ANNOUNCE_IP=192.168.65.2
-      - REDIS_CLUSTER_BUS_ANNOUNCE_PORT=17003
-      - REDIS_CLUSTER_DYNAMIC_IPS=no
-    volumes:
-      - type: bind
-        source: ./modules
-        target: /opt/bitnami/redis/modules
-      - type: bind
-        source: ./modules/overrides.conf
-        target: /opt/bitnami/redis/mounted-etc/overrides.conf
-    networks:
-      redisnetwork:
-        ipv4_address: 172.24.112.3
-
-  redis-cluster_4:
-    image: docker.io/bitnami/redis-cluster:7.0
-    ports:
-      - "7004:7004"
-      - "17004:17004"
-    environment:
-      - REDIS_PORT_NUMBER=7001
-      - REDIS_PASSWORD=master123
-      - REDIS_NODES=redis-cluster_1 redis-cluster_2 redis-cluster_3 redis-cluster_4 redis-cluster_5 redis-cluster_6
-      - REDIS_CLUSTER_ANNOUNCE_PORT=7004
-      - REDIS_CLUSTER_ANNOUNCE_IP=192.168.65.3
-      - REDIS_CLUSTER_BUS_ANNOUNCE_PORT=17004
-      - REDIS_CLUSTER_DYNAMIC_IPS=no
-    volumes:
-      - type: bind
-        source: ./modules
-        target: /opt/bitnami/redis/modules
-      - type: bind
-        source: ./modules/overrides.conf
-        target: /opt/bitnami/redis/mounted-etc/overrides.conf
-    networks:
-      redisnetwork:
-        ipv4_address: 172.24.112.4
-
-  redis-cluster_5:
-    image: docker.io/bitnami/redis-cluster:7.0
-    ports:
-      - "7005:7005"
-      - "17005:17005"
-    environment:
-      - REDIS_PORT_NUMBER=7001
-      - REDIS_PASSWORD=master123
-      - REDIS_NODES=redis-cluster_1 redis-cluster_2 redis-cluster_3 redis-cluster_4 redis-cluster_5 redis-cluster_6
-      - REDIS_CLUSTER_ANNOUNCE_PORT=7005
-      - REDIS_CLUSTER_ANNOUNCE_IP=192.168.65.4
-      - REDIS_CLUSTER_BUS_ANNOUNCE_PORT=17005
-      - REDIS_CLUSTER_DYNAMIC_IPS=no
-    volumes:
-      - type: bind
-        source: ./modules
-        target: /opt/bitnami/redis/modules
-      - type: bind
-        source: ./modules/overrides.conf
-        target: /opt/bitnami/redis/mounted-etc/overrides.conf
-    networks:
-      redisnetwork:
-        ipv4_address: 172.24.112.5
-
-  redis-cluster_6:
-    image: docker.io/bitnami/redis-cluster:7.0
-    ports:
-      - "7006:7006"
-      - "17006:17006"
-    environment:
-      - REDIS_PORT_NUMBER=7001
-      - REDIS_PASSWORD=master123
-      - REDIS_NODES=redis-cluster_1 redis-cluster_2 redis-cluster_3 redis-cluster_4 redis-cluster_5 redis-cluster_6
-      - REDIS_CLUSTER_ANNOUNCE_PORT=7006
-      - REDIS_CLUSTER_ANNOUNCE_IP=192.168.65.5
-      - REDIS_CLUSTER_BUS_ANNOUNCE_PORT=17006
-      - REDIS_CLUSTER_DYNAMIC_IPS=no
-    volumes:
-      - type: bind
-        source: ./modules
-        target: /opt/bitnami/redis/modules
-      - type: bind
-        source: ./modules/overrides.conf
-        target: /opt/bitnami/redis/mounted-etc/overrides.conf
-    networks:
-      redisnetwork:
-        ipv4_address: 172.24.112.6
-
-  redis-cluster-init:
-    image: docker.io/bitnami/redis-cluster:7.0
-    container_name: redis-cluster-init
-    restart: 'no'
+      - MONGO_INITDB_ROOT_USERNAME=nbd
+      - MONGO_INITDB_ROOT_PASSWORD=nbdpassword
+    command: --config /etc/mongod.conf
+    healthcheck:
+      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
+      interval: 10s
+      timeout: 2s
+      retries: 5
+  ##initialize mongo replicaset from another container:
+  mongoinit:
+    build: .
+    image: mongocustom:1
+    hostname: mongodbinit
+    container_name: mongodbinit
     depends_on:
-      - redis-cluster_1
-      - redis-cluster_2
-      - redis-cluster_3
-      - redis-cluster_4
-      - redis-cluster_5
-      - redis-cluster_6
-    entrypoint: []
-    command:
-      - /bin/bash
-      - -c
-      - redis-cli -a master123 --cluster create 192.168.65.0:7001 192.168.65.0:7002 192.168.65.0:7003 192.168.65.0:7004 192.168.65.0:7005 192.168.65.0:7006 --cluster-replicas 1 --cluster-yes
-    networks:
-      redisnetwork:
-        ipv4_address: 172.24.112.0
-
+      mongo:
+        condition: service_healthy
+    command: >
+      mongosh --host mongodb:27017 --username nbd --password nbdpassword --authenticationDatabase admin --eval
+      '
+      rs.initiate();
+      '
+volumes:
+  redis-stack-data:
+    driver: local
 networks:
-  redisnetwork:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.24.0.0/16
+  redisnet: { }

@@ -4,6 +4,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import java.util.UUID;
 
@@ -12,17 +14,23 @@ import java.util.UUID;
 @ToString
 @EqualsAndHashCode
 public class Book extends AbstractEntityMgd {
-
+    @BsonProperty("title")
     private String title;
-
+    @BsonProperty("author")
     private String author;
-
+    @BsonProperty("serialNumber")
     private String serialNumber;
-
+    @BsonProperty("genre")
     private String genre;
-
+    @BsonProperty("rented")
     private boolean isRented;
-    public Book(UUID entityId)  {
+    @BsonCreator
+    public Book(@BsonProperty("_id") UUID entityId,
+                @BsonProperty("title") String title,
+                @BsonProperty("author") String author,
+                @BsonProperty("serialNumber") String serialNumber,
+                @BsonProperty("genre") String genre,
+                @BsonProperty("rented") boolean isRented) {
         super(entityId);
         this.title = title;
         this.author = author;
