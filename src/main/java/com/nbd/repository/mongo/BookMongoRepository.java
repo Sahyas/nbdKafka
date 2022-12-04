@@ -1,23 +1,22 @@
-package com.nbd.repository;
+package com.nbd.repository.mongo;
 
 import com.mongodb.MongoException;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.UpdateResult;
-import com.nbd.model.Book;
+import com.nbd.model.mongo.BookMgd;
+
 import org.bson.conversions.Bson;
 
-import javax.print.Doc;
+public class BookMongoRepository extends AbstractMongoRepository<BookMgd> {
 
-public class BookRepositoryImpl extends AbstractMongoRepository {
-
-    public BookRepositoryImpl() {
-        super("books", Book.class);
+    public BookMongoRepository() {
+        super("books", BookMgd.class);
     }
 
-    public Book findBySerialNumber(String serialNumber) {
-        MongoCollection<Book> collection = mongoDb.getCollection(collectionString, Book.class);
+    public BookMgd findBySerialNumber(String serialNumber) {
+        MongoCollection<BookMgd> collection = mongoDb.getCollection(collectionString, BookMgd.class);
         Bson filter = Filters.eq("serialNumber", serialNumber);
         return collection
                 .find()
@@ -26,17 +25,12 @@ public class BookRepositoryImpl extends AbstractMongoRepository {
     }
 
     public void clearDatabase() {
-        MongoCollection<Book> collection = mongoDb.getCollection(collectionString, Book.class);
+        MongoCollection<BookMgd> collection = mongoDb.getCollection(collectionString, BookMgd.class);
         collection.drop();
     }
 
-    @Override
-    public void close() throws Exception {
-        System.out.println("closing book repository");
-    }
-
-    public void updateBook(Book book) {
-        MongoCollection<Book> collection = mongoDb.getCollection(collectionString, Book.class);
+    public void updateBook(BookMgd book) {
+        MongoCollection<BookMgd> collection = mongoDb.getCollection(collectionString, BookMgd.class);
         Bson filter = Filters.eq("_id", book.getId());
         Bson update = Updates.combine(
                 Updates.set("title", book.getTitle()),

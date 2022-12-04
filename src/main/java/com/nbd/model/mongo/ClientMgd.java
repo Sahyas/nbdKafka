@@ -1,19 +1,25 @@
-package com.nbd.model;
+package com.nbd.model.mongo;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import java.util.UUID;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+
 @Getter
 @Setter
 @BsonDiscriminator(key = "_clazz")
 @EqualsAndHashCode
-public abstract class Client extends AbstractEntityMgd {
+@NoArgsConstructor
+@SuperBuilder
+public abstract class ClientMgd extends AbstractEntityMgd {
+
     @BsonProperty("firstName")
     private String firstName;
     @BsonProperty("lastName")
@@ -28,13 +34,13 @@ public abstract class Client extends AbstractEntityMgd {
     private int age;
 
     @BsonCreator
-    public Client(@BsonProperty("_id") UUID entityId,
-                  @BsonProperty("firstName") String firstName,
-                  @BsonProperty("lastName") String lastName,
-                  @BsonProperty("personalId") String personalId,
-                  @BsonProperty("archive") boolean isArchive,
-                  @BsonProperty("debt") float debt,
-                  @BsonProperty("age") int age) {
+    public ClientMgd(@BsonProperty("_id") UUID entityId,
+                     @BsonProperty("firstName") String firstName,
+                     @BsonProperty("lastName") String lastName,
+                     @BsonProperty("personalId") String personalId,
+                     @BsonProperty("archive") boolean isArchive,
+                     @BsonProperty("debt") float debt,
+                     @BsonProperty("age") int age) {
         super(entityId);
         this.firstName = firstName;
         this.lastName = lastName;
@@ -44,7 +50,7 @@ public abstract class Client extends AbstractEntityMgd {
         this.isArchive = isArchive;
     }
 
-    public Client(String firstName, String lastName, String personalId, int age) {
+    public ClientMgd(String firstName, String lastName, String personalId, int age) {
         super(UUID.randomUUID());
         this.firstName = firstName;
         this.lastName = lastName;

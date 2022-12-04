@@ -1,18 +1,27 @@
-package com.nbd.model;
+package com.nbd.model.mongo;
 
-import lombok.Getter;
 import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+
 @Getter
 @BsonDiscriminator(key = "_clazz", value = "adult")
-public class Adult extends Client {
+@Setter
+@NoArgsConstructor
+@SuperBuilder
+@EqualsAndHashCode
+public class AdultMgd extends ClientMgd {
     @BsonCreator
-    public Adult(@BsonProperty("firstName") String firstName,
-                 @BsonProperty("lastName") String lastName,
-                 @BsonProperty("personalId") String personalID,
-                 @BsonProperty("age") int age) {
+    public AdultMgd(@BsonProperty("firstName") String firstName,
+                    @BsonProperty("lastName") String lastName,
+                    @BsonProperty("personalId") String personalID,
+                    @BsonProperty("age") int age) {
         super(firstName, lastName, personalID, age);
     }
 
