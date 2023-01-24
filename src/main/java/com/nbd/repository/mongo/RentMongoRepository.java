@@ -2,24 +2,24 @@ package com.nbd.repository.mongo;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
-import com.nbd.model.mongo.BookMgd;
-import com.nbd.model.mongo.ClientMgd;
-import com.nbd.model.mongo.RentMgd;
+import com.nbd.model.Book;
+import com.nbd.model.Client;
+import com.nbd.model.Rent;
 
 import org.bson.conversions.Bson;
 
-public class RentMongoRepository extends AbstractMongoRepository<RentMgd> {
+public class RentMongoRepository extends AbstractMongoRepository<Rent> {
     public RentMongoRepository() {
-        super("rents", RentMgd.class);
+        super("rents", Rent.class);
     }
 
     public void clearDatabase() {
-        MongoCollection<RentMgd> collection = mongoDb.getCollection(collectionString, RentMgd.class);
+        MongoCollection<Rent> collection = mongoDb.getCollection(collectionString, Rent.class);
         collection.drop();
     }
 
-    public RentMgd findByBook(BookMgd book) {
-        MongoCollection<RentMgd> collection = mongoDb.getCollection(collectionString, RentMgd.class);
+    public Rent findByBook(Book book) {
+        MongoCollection<Rent> collection = mongoDb.getCollection(collectionString, Rent.class);
         Bson filter = Filters.eq("book._id", book.getId());
         return collection
                 .find()
@@ -27,8 +27,8 @@ public class RentMongoRepository extends AbstractMongoRepository<RentMgd> {
                 .first();
     }
 
-    public RentMgd findByClient(ClientMgd client) {
-        MongoCollection<RentMgd> collection = mongoDb.getCollection(collectionString, RentMgd.class);
+    public Rent findByClient(Client client) {
+        MongoCollection<Rent> collection = mongoDb.getCollection(collectionString, Rent.class);
         Bson filter = Filters.eq("client._id", client.getId());
         return collection
                 .find()

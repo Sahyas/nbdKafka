@@ -1,16 +1,12 @@
 package com.nbd.repository;
 
-import com.nbd.model.dto.Client;
-import com.nbd.model.mapper.ClientMapper;
-import com.nbd.model.mongo.ClientMgd;
-import com.nbd.model.redis.ClientRd;
+import com.nbd.model.Client;
 import com.nbd.repository.mongo.ClientMongoRepository;
 import com.nbd.repository.redis.ClientRedisRepository;
 
-import org.apache.commons.lang3.NotImplementedException;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -25,20 +21,20 @@ public class ClientRepository implements RepositoryInterface<Client> {
 
     @Override
     public Client add(Client entity) {
-         clientRedisRepository.add(ClientMapper.toJsonDocument(entity));
-         return ClientMapper.clientMgdToClient(clientMongoRepository.add(ClientMapper.toBsonDocument(entity)));
+         clientRedisRepository.add(entity);
+         return clientMongoRepository.add(entity);
     }
 
     @Override
-    public Client getById(UUID id) {
+    public Optional<Client> getById(UUID id) {
         Client client = null;
         if (clientRedisRepository.checkConnection()) {
-            client = ClientMapper.clientRdtoClient(clientRedisRepository.getById(id));
+            client = clientRedisRepository.getById(id).orElse(null);
         }
         if (client == null) {
-            return ClientMapper.clientMgdToClient(clientMongoRepository.getById(id));
+            return clientMongoRepository.getById(id);
         }
-        return client;
+        return Optional.of(client);
     }
 
     @Override
@@ -49,8 +45,8 @@ public class ClientRepository implements RepositoryInterface<Client> {
 
     @Override
     public Client update(Client entity) {
-        clientRedisRepository.update(ClientMapper.toJsonDocument(entity));
-        return ClientMapper.clientMgdToClient(clientMongoRepository.update(ClientMapper.toBsonDocument(entity)));
+        clientRedisRepository.update(entity);
+        return clientMongoRepository.update(entity);
     }
 
     @Override
@@ -62,21 +58,12 @@ public class ClientRepository implements RepositoryInterface<Client> {
     public List<Client> findAll() {
         List<Client> clients = new ArrayList<>();
         if (clientRedisRepository.checkConnection()) {
-            List<ClientRd> found = clientRedisRepository.findAll();
-            for (ClientRd client: found) {
-                clients.add(ClientMapper.clientRdtoClient(client));
-            }
+            List<Client> found = clientRedisRepository.findAll();
+            clients.addAll(found);
         } else {
-            List<ClientMgd> found = clientMongoRepository.findAll();
-            for (ClientMgd client: found) {
-                clients.add(ClientMapper.clientMgdToClient(client));
-            }
+            List<Client> found = clientMongoRepository.findAll();
+            clients.addAll(found);
         }
         return clients;
-    }
-
-    @Override
-    public Client findByPersonalID(String personalId) {
-        throw new NotImplementedException();
     }
 }

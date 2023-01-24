@@ -1,9 +1,9 @@
 package com.nbd.repository.redis;
 
-import com.nbd.model.redis.ClientRd;
+import com.nbd.model.Client;
 
-public class ClientRedisRepository extends AbstractRedisRepository<ClientRd> {
+public class ClientRedisRepository extends AbstractRedisRepository<Client> {
     public ClientRedisRepository() {
-        super(ClientRd.class, "client:");
+        super(Client.class, "client:");
     }
 }

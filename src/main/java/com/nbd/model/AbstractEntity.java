@@ -1,4 +1,4 @@
-package com.nbd.model.mongo;
+package com.nbd.model;
 
 import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonId;
@@ -16,13 +16,13 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @Setter
 @SuperBuilder
-public abstract class AbstractEntityMgd implements Serializable {
+public abstract class AbstractEntity implements Serializable {
     @BsonProperty("_id")
     @BsonId
     protected UUID id;
 
     @BsonCreator
-    public AbstractEntityMgd(@BsonProperty("_id") UUID uniqueId) {
+    public AbstractEntity(@BsonProperty("_id") UUID uniqueId) {
         this.id = uniqueId;
     }
 }

@@ -1,8 +1,10 @@
-package com.nbd.model.redis;
+package com.nbd.model;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
 
 import org.bson.codecs.pojo.annotations.BsonCreator;
-
-import javax.json.bind.annotation.JsonbProperty;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -11,16 +13,18 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 @Getter
+@BsonDiscriminator(key = "_clazz", value = "adult")
 @Setter
 @NoArgsConstructor
 @SuperBuilder
 @EqualsAndHashCode
-public class AdultRd extends ClientRd {
+public class Adult extends Client {
+    @JsonCreator
     @BsonCreator
-    public AdultRd(@JsonbProperty("firstName") String firstName,
-                    @JsonbProperty("lastName") String lastName,
-                    @JsonbProperty("personalId") String personalID,
-                    @JsonbProperty("age") int age) {
+    public Adult(@BsonProperty("firstName") String firstName,
+                 @BsonProperty("lastName") String lastName,
+                 @BsonProperty("personalId") String personalID,
+                 @BsonProperty("age") int age) {
         super(firstName, lastName, personalID, age);
     }
 

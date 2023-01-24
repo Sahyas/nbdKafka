@@ -1,22 +1,20 @@
-package com.nbd.model.mongo;
+package com.nbd.model;
 
 import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import java.util.UUID;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
 @ToString
 @EqualsAndHashCode
+@NoArgsConstructor
 @SuperBuilder
-public class BookMgd extends AbstractEntityMgd {
+public class Book extends AbstractEntity {
     @BsonProperty("title")
     private String title;
     @BsonProperty("author")
@@ -28,12 +26,12 @@ public class BookMgd extends AbstractEntityMgd {
     @BsonProperty("rented")
     private boolean isRented;
     @BsonCreator
-    public BookMgd(@BsonProperty("_id") UUID entityId,
-                   @BsonProperty("title") String title,
-                   @BsonProperty("author") String author,
-                   @BsonProperty("serialNumber") String serialNumber,
-                   @BsonProperty("genre") String genre,
-                   @BsonProperty("rented") boolean isRented) {
+    public Book(@BsonProperty("_id") UUID entityId,
+                @BsonProperty("title") String title,
+                @BsonProperty("author") String author,
+                @BsonProperty("serialNumber") String serialNumber,
+                @BsonProperty("genre") String genre,
+                @BsonProperty("rented") boolean isRented) {
         super(entityId);
         this.title = title;
         this.author = author;
@@ -42,7 +40,7 @@ public class BookMgd extends AbstractEntityMgd {
         this.isRented = isRented;
     }
 
-    public BookMgd(String title, String author, String serialNumber, String genre) {
+    public Book(String title, String author, String serialNumber, String genre) {
         super(UUID.randomUUID());
         this.title = title;
         this.author = author;

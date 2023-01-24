@@ -1,35 +1,35 @@
 package com.nbd.service;
 
+import com.nbd.model.Book;
+import com.nbd.repository.BookRepository;
 import com.nbd.repository.mongo.BookMongoRepository;
-import com.nbd.model.mongo.BookMgd;
+import com.nbd.repository.redis.BookRedisRepository;
 
 import java.util.List;
 import java.util.UUID;
 
 public class BookServiceImpl {
-    private final BookMongoRepository bookRepository;
-
+    private BookRepository bookRepository;
     public BookServiceImpl() {
-        this.bookRepository = new BookMongoRepository();
+        this.bookRepository = new BookRepository(new BookRedisRepository(), new BookMongoRepository());
     }
 
-    public Object getBookById(UUID id) {
-        return bookRepository.getById(id);
+    public Book getBookById(UUID id) {
+        return bookRepository.getById(id).orElse(null);
     }
 
-    public BookMgd getBook(String serialNumber) {
-        return bookRepository.findBySerialNumber(serialNumber);
-    }
-
-    public List<BookMgd> findAllBooks() {
+    public List<Book> findAllBooks() {
         return bookRepository.findAll();
     }
 
-    public void registerBook(String title, String author, String serialNumber, String genre) {
-        bookRepository.add(new BookMgd(title, author, serialNumber, genre));
+    public Book registerBook(String title, String author, String serialNumber, String genre) {
+        return bookRepository.add(new Book(title, author, serialNumber, genre));
+    }
+    public void unregisterBook(Book book) {
+        bookRepository.delete(book.getId());
     }
 
-    public void unregisterBook(BookMgd book) {
-        bookRepository.delete(book.getId());
+    public Book updateBook(Book book) {
+        return bookRepository.update(book);
     }
 }

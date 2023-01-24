@@ -1,10 +1,10 @@
 package com.nbd.repository.mongo;
 
-import com.nbd.model.mongo.ClientMgd;
+import com.nbd.model.Client;
 
-public class ClientMongoRepository extends AbstractMongoRepository<ClientMgd> {
+public class ClientMongoRepository extends AbstractMongoRepository<Client> {
 
     public ClientMongoRepository() {
-        super("clients", ClientMgd.class);
+        super("clients", Client.class);
     }
 }

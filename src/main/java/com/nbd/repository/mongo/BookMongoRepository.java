@@ -5,18 +5,18 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.UpdateResult;
-import com.nbd.model.mongo.BookMgd;
+import com.nbd.model.Book;
 
 import org.bson.conversions.Bson;
 
-public class BookMongoRepository extends AbstractMongoRepository<BookMgd> {
+public class BookMongoRepository extends AbstractMongoRepository<Book> {
 
     public BookMongoRepository() {
-        super("books", BookMgd.class);
+        super("books", Book.class);
     }
 
-    public BookMgd findBySerialNumber(String serialNumber) {
-        MongoCollection<BookMgd> collection = mongoDb.getCollection(collectionString, BookMgd.class);
+    public Book findBySerialNumber(String serialNumber) {
+        MongoCollection<Book> collection = mongoDb.getCollection(collectionString, Book.class);
         Bson filter = Filters.eq("serialNumber", serialNumber);
         return collection
                 .find()
@@ -25,12 +25,12 @@ public class BookMongoRepository extends AbstractMongoRepository<BookMgd> {
     }
 
     public void clearDatabase() {
-        MongoCollection<BookMgd> collection = mongoDb.getCollection(collectionString, BookMgd.class);
+        MongoCollection<Book> collection = mongoDb.getCollection(collectionString, Book.class);
         collection.drop();
     }
 
-    public void updateBook(BookMgd book) {
-        MongoCollection<BookMgd> collection = mongoDb.getCollection(collectionString, BookMgd.class);
+    public void updateBook(Book book) {
+        MongoCollection<Book> collection = mongoDb.getCollection(collectionString, Book.class);
         Bson filter = Filters.eq("_id", book.getId());
         Bson update = Updates.combine(
                 Updates.set("title", book.getTitle()),

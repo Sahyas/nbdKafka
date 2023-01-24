@@ -1,9 +1,9 @@
 package com.nbd.repository.redis;
 
-import com.nbd.model.redis.BookRd;
+import com.nbd.model.Book;
 
-public class BookRedisRepository extends AbstractRedisRepository<BookRd> {
+public class BookRedisRepository extends AbstractRedisRepository<Book> {
     public BookRedisRepository() {
-        super(BookRd.class, "book:");
+        super(Book.class, "book:");
     }
 }

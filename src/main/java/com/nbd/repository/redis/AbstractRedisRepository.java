@@ -1,6 +1,6 @@
 package com.nbd.repository.redis;
 
-import com.nbd.model.redis.AbstractEntityRd;
+import com.nbd.model.AbstractEntity;
 import com.nbd.repository.RepositoryInterface;
 
 import java.util.*;
@@ -11,8 +11,9 @@ import redis.clients.jedis.DefaultJedisClientConfig;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisClientConfig;
 import redis.clients.jedis.JedisPooled;
+import redis.clients.jedis.exceptions.JedisException;
 
-public class AbstractRedisRepository<T extends AbstractEntityRd> implements RepositoryInterface<T> {
+public class AbstractRedisRepository<T extends AbstractEntity> implements RepositoryInterface<T> {
 
     private static JedisPooled pool;
     private static Jsonb jsonb = JsonbBuilder.create();
@@ -31,7 +32,12 @@ public class AbstractRedisRepository<T extends AbstractEntityRd> implements Repo
     }
 
     public boolean checkConnection() {
-        return pool.getPool().getResource().isConnected();
+        try {
+            pool.getPool().getResource().isConnected();
+            return true;
+        } catch (JedisException e) {
+            return false;
+        }
     }
 
     public void clearCache(){
@@ -41,21 +47,14 @@ public class AbstractRedisRepository<T extends AbstractEntityRd> implements Repo
         }
     }
 
-    public void clearThis(){
-        Set<String> keys = pool.keys(prefix + "*");
-        for (String key : keys){
-            pool.del(key);
-        }
-    }
-
-    public T getById(UUID id) {
+    public Optional<T> getById(UUID id) {
         Optional<String> found = Optional.of(pool.get(prefix + id.toString()));
-        return jsonb.fromJson(found.get(), this.clazz);
+        return Optional.of(jsonb.fromJson(found.get(), this.clazz));
     }
 
     @Override
     public void delete(UUID id) {
-        pool.del(prefix + getById(id));
+        pool.del(prefix + id);
     }
 
     public T add(T entity) {
@@ -86,16 +85,11 @@ public class AbstractRedisRepository<T extends AbstractEntityRd> implements Repo
         for (String key : keys){
             all.add(jsonb.fromJson(pool.get(key), this.clazz));
         }
-
         return all;
     }
 
-    @Override
-    public T findByPersonalID(String personalId) {
-        return null;
-    }
-
     public void close() throws Exception {
+        System.out.println("closing redis connection");
         pool.getPool().destroy();
         pool.close();
     }

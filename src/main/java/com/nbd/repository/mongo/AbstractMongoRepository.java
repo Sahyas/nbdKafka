@@ -4,11 +4,10 @@ import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoCredential;
 import com.mongodb.client.*;
-import com.mongodb.client.model.Filters;
-import com.nbd.model.mongo.AbstractEntityMgd;
-import com.nbd.model.mongo.AdultMgd;
-import com.nbd.model.mongo.ChildMgd;
-import com.nbd.model.mongo.ClientMgd;
+import com.nbd.model.AbstractEntity;
+import com.nbd.model.Adult;
+import com.nbd.model.Child;
+import com.nbd.model.Client;
 import com.nbd.repository.RepositoryInterface;
 
 import org.bson.UuidRepresentation;
@@ -20,17 +19,18 @@ import org.bson.conversions.Bson;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static com.mongodb.client.model.Filters.eq;
 
-public class AbstractMongoRepository<T extends AbstractEntityMgd> implements RepositoryInterface<T> {
+public class AbstractMongoRepository<T extends AbstractEntity> implements RepositoryInterface<T> {
 
     protected ConnectionString connectionString = new ConnectionString("mongodb://localhost:27017");
     protected MongoCredential credential = MongoCredential.createCredential("nbd", "admin", "nbdpassword".toCharArray());
     protected CodecRegistry pojoCodecRegistry = CodecRegistries.fromProviders(PojoCodecProvider.builder()
             .automatic(true)
-            .register(ClientMgd.class, AdultMgd.class, ChildMgd.class)
+            .register(Client.class, Adult.class, Child.class)
             .conventions(Conventions.DEFAULT_CONVENTIONS)
             .build());
     protected MongoClient mongoClient;
@@ -87,9 +87,9 @@ public class AbstractMongoRepository<T extends AbstractEntityMgd> implements Rep
     }
 
     @Override
-    public T getById(UUID id) {
+    public Optional<T> getById(UUID id) {
         MongoCollection<T> collection = mongoDb.getCollection(collectionString, entityClassName);
-        return collection.find(eq("_id", id)).first();
+        return Optional.ofNullable(collection.find(eq("_id", id)).first());
     }
 
     @Override
@@ -102,18 +102,9 @@ public class AbstractMongoRepository<T extends AbstractEntityMgd> implements Rep
         }
         return objects;
     }
-    @Override
-    public T findByPersonalID(String personalId) {
-        MongoCollection<T> collection = mongoDb.getCollection(collectionString, entityClassName);
-        Bson filter = Filters.eq("personalId", personalId);
-        return collection
-                .find()
-                .filter(filter)
-                .first();
-    }
 
     public void clearDatabase() {
-        MongoCollection<ClientMgd> collection = mongoDb.getCollection(collectionString, ClientMgd.class);
+        MongoCollection<Client> collection = mongoDb.getCollection(collectionString, Client.class);
         collection.drop();
     }
 }

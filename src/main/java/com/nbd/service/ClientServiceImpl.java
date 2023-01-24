@@ -1,8 +1,8 @@
 package com.nbd.service;
 
-import com.nbd.model.dto.Adult;
-import com.nbd.model.dto.Child;
-import com.nbd.model.dto.Client;
+import com.nbd.model.Adult;
+import com.nbd.model.Child;
+import com.nbd.model.Client;
 import com.nbd.repository.ClientRepository;
 import com.nbd.repository.mongo.ClientMongoRepository;
 import com.nbd.repository.redis.ClientRedisRepository;
@@ -18,25 +18,21 @@ public class ClientServiceImpl {
     }
 
     public Client getClientById(UUID id) {
-        return clientRepository.getById(id);
-    }
-
-    public Client getClientByPersonalId(String personalId) {
-        return clientRepository.findByPersonalID(personalId);
+        return clientRepository.getById(id).orElse(null);
     }
 
     public Client addClient(String firstName, String lastName, String personalId, int age) {
         if (age < 18) {
-            return clientRepository.add(new Child(UUID.randomUUID(), firstName, lastName, personalId, age));
+            return clientRepository.add(new Child(firstName, lastName, personalId, age));
         }
         if (age > 18) {
-            return clientRepository.add(new Adult(UUID.randomUUID(), firstName, lastName, personalId, age));
+            return clientRepository.add(new Adult(firstName, lastName, personalId, age));
         }
         return null;
     }
 
     public void deleteClient(Client client) {
-        clientRepository.delete(client.getUniqueId());
+        clientRepository.delete(client.getId());
     }
 
     public List<Client> findAllClients() {

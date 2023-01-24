@@ -1,43 +1,44 @@
 package com.nbd.service;
 
-import com.nbd.model.mongo.BookMgd;
-import com.nbd.model.mongo.ClientMgd;
-import com.nbd.model.mongo.RentMgd;
-import com.nbd.repository.mongo.BookMongoRepository;
-import com.nbd.repository.mongo.ClientMongoRepository;
+import com.nbd.model.Book;
+import com.nbd.model.Client;
+import com.nbd.model.Rent;
+import com.nbd.repository.RentRepository;
 import com.nbd.repository.mongo.RentMongoRepository;
+import com.nbd.repository.redis.RentRedisRepository;
 
 import java.util.List;
+import java.util.UUID;
 
 public class RentServiceImpl {
-    private final RentMongoRepository rentRepository;
-    private final ClientMongoRepository clientRepository;
-    private final BookMongoRepository bookRepository;
+    private final RentRepository rentRepository;
+    private final ClientServiceImpl clientService;
+    private final BookServiceImpl bookService;
 
-    public RentServiceImpl() {
-        this.rentRepository = new RentMongoRepository();
-        this.clientRepository = new ClientMongoRepository();
-        this.bookRepository = new BookMongoRepository();
+    public RentServiceImpl(ClientServiceImpl clientService, BookServiceImpl bookService) {
+        this.rentRepository = new RentRepository(new RentMongoRepository(), new RentRedisRepository());
+        this.clientService = clientService;
+        this.bookService = bookService;
     }
 
-    public void rentBook(String clientPersonalId, String bookSerialNumber) {
-        ClientMgd client = clientRepository.findByPersonalID(clientPersonalId);
-        BookMgd book = bookRepository.findBySerialNumber(bookSerialNumber);
-        RentMgd rent = new RentMgd(client, book);
+    public void rentBook(UUID clientId, UUID bookId) {
+        Client client = clientService.getClientById(clientId);
+        Book book = bookService.getBookById(bookId);
+        Rent rent = new Rent(client, book);
         if (!book.isRented()) {
             book.setRented(true);
-            bookRepository.updateBook(book);
+            bookService.updateBook(book);
             rentRepository.add(rent);
         }
     }
 
-    public boolean returnBook(BookMgd book) {
+    public boolean returnBook(Book book) {
         if(book.isRented()) {
-            BookMgd foundBook = bookRepository.findBySerialNumber(book.getSerialNumber());
-            RentMgd rent = rentRepository.findByBook(book);
+            Book foundBook = bookService.getBookById(book.getId());
+            Rent rent = rentRepository.findByBook(book);
             rentRepository.delete(rent.getId());
             foundBook.setRented(false);
-            bookRepository.updateBook(book);
+            bookService.updateBook(book);
             return true;
         } else {
             System.out.println("Ta książka nie jest wypozyczona");
@@ -45,15 +46,15 @@ public class RentServiceImpl {
         }
     }
 
-    public List<RentMgd> findAllCurrentRents() {
+    public List<Rent> findAllCurrentRents() {
         return rentRepository.findAll();
     }
 
-    public RentMgd getRentByBook(String serialnumber) {
-        return rentRepository.findByBook(bookRepository.findBySerialNumber(serialnumber));
+    public Rent getRentByBook(Book book) {
+        return rentRepository.findByBook(book);
     }
 
-    public RentMgd getRentByClient(String personalID) {
-        return rentRepository.findByClient(clientRepository.findByPersonalID(personalID));
+    public Rent getRentByClient(Client client) {
+        return rentRepository.findByClient(client);
     }
 }
