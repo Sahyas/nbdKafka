@@ -2,6 +2,8 @@ package com.nbd.repository.kafka;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nbd.model.Adult;
+import com.nbd.model.Child;
 import com.nbd.model.Rent;
 import com.nbd.repository.mongo.RentMongoRepository;
 
@@ -79,12 +81,14 @@ public class Consumers {
             }
         } catch (WakeupException we) {
             System.out.println("Job ended");
+            rentMongoRepository.clearDatabase();
             values.forEach(rent -> rentMongoRepository.add(getRentFromStringValue(rent)));
         }
     }
 
     public Rent getRentFromStringValue(String value) {
         ObjectMapper mapper = new ObjectMapper();
+        mapper.registerSubtypes(Adult.class, Child.class);
         Rent rent;
         try {
             rent = mapper.readValue(value, Rent.class);

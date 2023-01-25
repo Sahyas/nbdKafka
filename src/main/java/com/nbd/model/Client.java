@@ -18,7 +18,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "_clazz")
 @JsonbTypeInfo({
         @JsonbSubtype(alias = "child", type = Child.class),
         @JsonbSubtype(alias = "adult", type = Adult.class)
@@ -29,10 +29,6 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode
 @NoArgsConstructor
 @SuperBuilder
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = Adult.class, name = "adult"),
-        @JsonSubTypes.Type(value = Child.class, name = "child")
-})
 public abstract class Client extends AbstractEntity {
 
     @JsonProperty("firstName")

@@ -2,6 +2,8 @@ package com.nbd.repository.kafka;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nbd.model.Adult;
+import com.nbd.model.Child;
 import com.nbd.model.Rent;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -38,6 +40,7 @@ public class Producer {
 
     public void send(Rent rent) throws JsonProcessingException, ExecutionException, InterruptedException {
         ObjectMapper mapper = new ObjectMapper();
+        mapper.registerSubtypes(Adult.class, Child.class);
         String jsonObject = mapper.writeValueAsString(rent);
         ProducerRecord<UUID, String> record = new ProducerRecord<>(Topics.RENT_TOPIC.getTopic(),
                 rent.getId(), jsonObject);

@@ -2,6 +2,8 @@ package com.nbd.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 import org.bson.codecs.pojo.annotations.BsonProperty;
@@ -18,6 +20,10 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @SuperBuilder
 @EqualsAndHashCode
+@JsonTypeName("child")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = Child.class, name = "child")
+})
 public class Child extends Client {
     @JsonCreator
     @BsonCreator
